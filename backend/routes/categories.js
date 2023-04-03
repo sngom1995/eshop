@@ -11,12 +11,20 @@ categoryRouter.get("/", async (req, res) => {
   res.send(categories);
 });
 
-categoryRouter.get("/:id", async (req, res) => {
-  const category = await Category.findById(req.params.id);
-  if (!category) {
-    res.status(500).json({ success: false });
-  }
-  res.send(category);
+categoryRouter.get("/:id", (req, res) => {
+  const category = Category.findById(req.params.id)
+    .then((category) => {
+      if (category) {
+        res.status(200).send(category);
+      } else {
+        res
+          .status(404)
+          .json({ success: false, message: "category not found!" });
+      }
+    })
+    .catch((err) => {
+      res.status(404).json({ success: false, error: err });
+    });
 });
 
 categoryRouter.post("/", async (req, res) => {
@@ -44,7 +52,7 @@ categoryRouter.put("/:id", async (req, res) => {
     { new: true }
   );
   if (!category) {
-    res.status(500).json({ success: false });
+    res.status(404).json({ success: false });
   }
   res.status(201).json(category);
 });
