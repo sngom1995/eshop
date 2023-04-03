@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import morgan from "morgan";
+import mongoose from "mongoose";
 
 dotenv.config();
 
@@ -30,6 +31,19 @@ app.post(`${api_url}/products`, (req, res) => {
   res.send(product);
 });
 
+mongoose
+  .connect(process.env.CONNECTION_STRING, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    dbName: "e-shop-db",
+  })
+  .then(() => {
+    console.log("Database Connection is ready...");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
 app.listen(3000, () => {
-  console.log("Server started on port 3000");
+  console.log("Server started on port 3000!");
 });
