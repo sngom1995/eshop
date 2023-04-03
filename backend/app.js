@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import productRouter from "./routes/products.js";
 import categoryRouter from "./routes/categories.js";
+import userRouter from "./routes/users.js";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.options("*", cors());
 
 app.use(`${api_url}/products`, productRouter);
 app.use(`${api_url}/categories`, categoryRouter);
+app.use(`${api_url}/users`, userRouter);
 
 mongoose
   .connect(process.env.CONNECTION_STRING, {
