@@ -3,6 +3,9 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import mongoose from "mongoose";
+import cors from "cors";
+import productRouter from "./routes/products.js";
+import categoryRouter from "./routes/categories.js";
 
 dotenv.config();
 
@@ -14,22 +17,11 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(morgan("tiny"));
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-app.get(`${api_url}/products`, (req, res) => {
-  const product = {
-    id: 1,
-    name: "Product 1",
-    price: 100,
-  };
-  res.send(product);
-});
-app.post(`${api_url}/products`, (req, res) => {
-  const product = req.body;
-  console.log(product);
-  res.send(product);
-});
+app.use(cors());
+app.options("*", cors());
+
+app.use(`${api_url}/products`, productRouter);
+app.use(`${api_url}/categories`, categoryRouter);
 
 mongoose
   .connect(process.env.CONNECTION_STRING, {
