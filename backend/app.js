@@ -7,6 +7,8 @@ import cors from "cors";
 import productRouter from "./routes/products.js";
 import categoryRouter from "./routes/categories.js";
 import userRouter from "./routes/users.js";
+import authJwt from "./helpers/jwt.js";
+import errorHandler from "./helpers/error-handler.js";
 
 dotenv.config();
 
@@ -17,6 +19,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(morgan("tiny"));
+app.use(authJwt());
+app.use(errorHandler);
 
 app.use(cors());
 app.options("*", cors());

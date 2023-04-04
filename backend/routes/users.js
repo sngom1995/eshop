@@ -47,7 +47,30 @@ userRouter.post(`/`, (req, res) => {
 
   res.send(user);
 });
+userRouter.post(`/register`, (req, res) => {
+  let user = new User({
+    name: req.body.name,
+    email: req.body.email,
+    passwordHash: bcrypt.hashSync(req.body.password, 10),
+    phone: req.body.phone,
+    isAdmin: req.body.isAdmin,
+    street: req.body.street,
+    apartment: req.body.apartment,
+    zip: req.body.zip,
+    city: req.body.city,
+    country: req.body.country,
+  });
+  user
+    .save()
+    .then((user) => {
+      res.status(201).send(user);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
 
+  res.send(user);
+});
 userRouter.put("/:id", async (req, res) => {
   const user = await User.findByIdAndUpdate(
     req.params.id,
