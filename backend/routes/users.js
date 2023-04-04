@@ -1,6 +1,7 @@
 import { User } from "../models/user.js";
 import express from "express";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const userRouter = express.Router();
 
@@ -97,6 +98,27 @@ userRouter.get(`/get/count`, async (req, res) => {
   res.send({
     userCount: userCount,
   });
+});
+
+userRouter.post("/login", async (req, res) => {
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) {
+    res.status(400).send("User not found");
+  }
+  if (user && bcrypt.compareSync(req.body.password, user.passwordHash)) {
+    const secret = process.env.SECRET;
+    const token = jwt.sign(
+      {
+        userId: user.id,
+      },
+      secret,
+      { expiresIn: "1d" }
+    );
+    res.status(200).send({ user: user.email, token: token });
+  } else {
+    res.status(400).send("password incorrect");
+  }
 });
 
 export default userRouter;
