@@ -7,6 +7,7 @@ import cors from "cors";
 import productRouter from "./routes/products.js";
 import categoryRouter from "./routes/categories.js";
 import userRouter from "./routes/users.js";
+import orderRouter from "./routes/orders.js";
 import authJwt from "./helpers/jwt.js";
 import errorHandler from "./helpers/error-handler.js";
 
@@ -28,6 +29,7 @@ app.options("*", cors());
 app.use(`${api_url}/products`, productRouter);
 app.use(`${api_url}/categories`, categoryRouter);
 app.use(`${api_url}/users`, userRouter);
+app.use(`${api_url}/orders`, orderRouter);
 
 mongoose
   .connect(process.env.CONNECTION_STRING, {
