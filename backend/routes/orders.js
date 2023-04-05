@@ -113,15 +113,23 @@ orderRouter.delete("/:id", (req, res) => {
 });
 
 orderRouter.get("/get/totalSales", (req, res) => {
-  Order.aggregate([
+  const totalSales = Order.aggregate([
     { $group: { _id: null, totalsales: { $sum: "$totalPrice" } } },
-  ])
-    .then((order) => {
-      res.send({ totalsales: order.pop().totalsales });
-    })
-    .catch((err) => {
-      res.status(400).send({ message: err.message });
-    });
+  ]);
+  if (!totalSales) {
+    return res.status(400).send("The order sales cannot be generated");
+  }
+  res.send({ totalsales: totalSales });
+});
+
+orderRouter.get("/get/count", (req, res) => {
+  const orderCount = Order.countDocuments((count) => count);
+  if (!orderCount) {
+    res.status(500).json({ success: false });
+  }
+  res.send({
+    orderCount: orderCount,
+  });
 });
 
 export default orderRouter;
