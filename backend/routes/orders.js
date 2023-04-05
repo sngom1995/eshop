@@ -132,4 +132,20 @@ orderRouter.get("/get/count", (req, res) => {
   });
 });
 
+orderRouter.get("/get/userorders/:userId", (req, res) => {
+  const userOrderList = Order.find({ user: req.params.userId })
+    .populate({
+      path: "orderItems",
+      populate: {
+        path: "product",
+        populate: "category",
+      },
+    })
+    .sort({ dateOrdered: -1 });
+  if (!userOrderList) {
+    res.status(500).json({ success: false });
+  }
+  res.send(userOrderList);
+});
+
 export default orderRouter;
